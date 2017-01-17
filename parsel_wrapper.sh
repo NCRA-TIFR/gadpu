@@ -1,7 +1,7 @@
 #!/bin/bash
 
 i=11
-while [ $i -lt 12 ]
+while [ $i -lt 17 ]
 do
 	start_parseltongue.sh exec_thread_1.py $i THREAD_DIR_$[$i]
 	i=$[$i+1]
