@@ -1,5 +1,4 @@
 def lta_to_uvfits():
-	os.chdir(data_dir+DIR_NAME+'/fits')
 	lta_files = glob.glob('*.lta*')
 	flag_files = glob.glob('*.FLAGS*')
 	for i in range(len(lta_files)):
