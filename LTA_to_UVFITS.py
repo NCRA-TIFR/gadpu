@@ -5,3 +5,4 @@ def lta_to_uvfits():
 		lta_file_name = lta_files[i]
 		uvfits_file_name = lta_file_name +'.UVFITS'
 		spam.convert_lta_to_uvfits( lta_file_name, uvfits_file_name )	
+        return lta_files 
