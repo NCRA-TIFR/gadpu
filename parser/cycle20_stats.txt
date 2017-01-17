@@ -1,0 +1,7 @@
+Total Observations in Cycle 20 : 71
+
+Invalid LTA Files : 45
+
+Valid OBSLOG with no LTA file : 26
+
+
