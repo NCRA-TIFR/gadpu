@@ -1,12 +1,13 @@
 #import spam
 import filter_lta
-
+import os
 #List of all directories containing valid observations 
 VALID_FILES = filter_lta.VALID_OBS()
 
 #List of all directories for current threads to process
 THREAD_FILES = VALID_FILES[0:len(VALID_FILES):5]
-print THREAD_FILES
+print 'Executing this thread'
+os.system('pwd')
 
 def main():
 
