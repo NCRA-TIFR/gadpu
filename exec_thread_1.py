@@ -8,7 +8,6 @@ VALID_FILES = filter_lta.VALID_OBS()
 THREAD_FILES = VALID_FILES[0:len(VALID_FILES):5]
 print 'Executing this thread'
 os.system('pwd')
-
 def main():
 
     for i in THREAD_FILES:
