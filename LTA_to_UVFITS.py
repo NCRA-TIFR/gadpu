@@ -1,3 +1,6 @@
+import glob
+import spam
+
 def lta_to_uvfits():
 	lta_files = glob.glob('*.lta*')
 	#flag_files = glob.glob('*.FLAGS*')
