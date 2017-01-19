@@ -4,7 +4,7 @@ import operator
 import os 
 import re
 import glob
-
+import trace
 data_dir = '/data2/gmrtarch/cycle20/'
 VALID_LIST = 'parser/filter_healthy/healthy2_file.txt'
 valid_observations = open(VALID_LIST, 'r').read().split('\n')[0:-1]
@@ -42,8 +42,8 @@ def NUM_LTA():
 
         if relative_path in valid_observations:
             current_dir_lta_files = glob.glob(data_dir+DIR_NAME+'/'+'*.lta*') 
-            print current_dir_lta_files
-            if current_dir_lta_files != []:
+            #print current_dir_lta_files
+            if(current_dir_lta_files != []):
                 valid_obs.append(data_dir+DIR_NAME)
                 all_lta_files.append(current_dir_lta_files)
     return len([i for j in all_lta_files for i in j])
@@ -98,12 +98,8 @@ def main(lta_name):
         return -1
     except:
         pass 
-
 valid_observations = VALID_OBS()
-print valid_observations
-print NUM_LTA()
-
-"""
+lta_file_count = 0
 for DIR in valid_observations:
     all_lta_files = glob.glob(DIR + '/*.lta*')
     for LTA_FILE in all_lta_files:
@@ -112,12 +108,16 @@ for DIR in valid_observations:
             #Check if valid target name is found
             if output != -1:
                 lta_success_file.write(LTA_FILE + '\n' + output + '\n')
+                lta_file_count += 1
                 print(LTA_FILE)
                 print output
+                print lta_file_count
             else:
                 continue
+                ltahdr_error_dir.write(DIR+ '/' + LTA_FILE + '\n') 
+                lta_file_count += 1
         except:
             #Log the error directory to a file
             ltahdr_error_dir.write(DIR+ '/' + LTA_FILE + '\n')
-print main('/data2/gmrtarch/cycle20/20_035_17JUL11/20_035_17jul2011.lta')
-"""
+            lta_file_count += 1
+ 
