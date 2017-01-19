@@ -50,30 +50,40 @@ def extract( file_name ):
                 return i
 
 def main(lta_name):
+    calibrator_list = ['3C48', '3C147', '3C286']
     os.system('ltahdr -i'+ lta_name + '> lta_file.txt')
     dictionary = {}
-    skipped_rows = extract('lta_file.txt')-1
+    try:
+        skipped_rows = extract('lta_file.txt')-1
 
-    header = pd.read_csv('lta_file.txt',skiprows=skipped_rows,delimiter=r"\s+")
-    flux = list(set(header["OBJECT"]))
-    #print flux
+        header = pd.read_csv('lta_file.txt',skiprows=skipped_rows,delimiter=r"\s+")
+        flux = list(set(header["OBJECT"]))
+        #print flux
 
-    header['Nrecs'] = header['Nrecs'].astype(float)
+        header['Nrecs'] = header['Nrecs'].astype(float)
 
-    for i in flux :
-        temp = header.loc[header.OBJECT==i,'Nrecs'].values
-        temp = np.mean(temp)
-        dictionary[i]=temp
-    #print dictionary
-
-    source = max(dictionary.iteritems(),key=operator.itemgetter(1))[0]
-    os.system('rm lta_file.txt')
-    return source
+        for i in flux :
+            temp = header.loc[header.OBJECT==i,'Nrecs'].values
+            temp = np.mean(temp)
+            dictionary[i]=temp
+        print dictionary
+    
+        #Sort the list of targets according to the number of recordings
+        list_of_targets = [ i for i,j in sorted(dictionary.iteritems(),key=operator.itemgetter(1), reverse=True)]
+        source = max(list_of_targets)
+        for i in len(flux): 
+            if source in calibrator_list:
+                continue
+            else:
+                os.system('rm lta_file.txt')
+                return source
+    except:
+        pass 
 
 valid_observations = VALID_OBS()
 
 for DIR in valid_observations:
-    all_lta_files = glob.glob(DIR + '/*.lta')
+    all_lta_files = glob.glob(DIR + '/*.lta.*')
     for LTA_FILE in all_lta_files:
         try:
             print(LTA_FILE)
