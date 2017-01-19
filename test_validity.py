@@ -43,18 +43,6 @@ def VALID_OBS():
                     valid_obs.append(data_dir+DIR_NAME)
     return valid_obs
 
-valid_observations = VALID_OBS()
-
-for DIR in valid_observations:
-    os.chdir(DIR)
-    all_lta_files = glob.glob('*.lta')
-    for LTA_FILE in all_lta_files:
-        try:
-            print main(LTA_FILE)
-        except:
-            #Log the error directory to a file
-            ltahdr_error_dir.write(DIR+ '/' + LTA_FILE)
-            
 def extract( file_name ):
     with open(file_name) as f:
         for i,line in enumerate(f,1):
@@ -81,3 +69,15 @@ def main(lta_name):
     source = max(dictionary.iteritems(),key=operator.itemgetter(1))[0]
     os.system('rm lta_file.txt')
     return source
+
+valid_observations = VALID_OBS()
+
+for DIR in valid_observations:
+    all_lta_files = glob.glob(DIR + '/*.lta')
+    for LTA_FILE in all_lta_files:
+        try:
+            print(LTA_FILE)
+            print main(LTA_FILE)
+        except:
+            #Log the error directory to a file
+            ltahdr_error_dir.write(DIR+ '/' + LTA_FILE + '\n')
