@@ -1,9 +1,9 @@
 import re
 import os
 import glob
-data_dir = '/data2/shubhankar/gadpu/subset_data'
+data_dir = '/data2/shubhankar/gadpu/subset_data/'
 #data_dir = '/data2/gmrtarch/cycle20/'
-VALID_LIST = './parser/filter_healthy/healthy2_file.txt'
+VALID_LIST = '../parser/filter_healthy/healthy2_file.txt'
 valid_observations = open(VALID_LIST, 'r').read().split('\n')[0:-1]
 all_observations = os.listdir(data_dir)
 
