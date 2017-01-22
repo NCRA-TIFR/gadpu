@@ -5,14 +5,15 @@ import os
 import re
 import glob
 import trace
-data_dir = '/data2/shubhankar/subset_data/'
+"""
+data_dir = '../data2/shubhankar/subset_data/'
 #data_dir = '/data2/gmrtarch/cycle20/'
-VALID_LIST = 'parser/filter_healthy/healthy2_file.txt'
+VALID_LIST = '../parser/filter_healthy/healthy2_file.txt'
 valid_observations = open(VALID_LIST, 'r').read().split('\n')[0:-1]
 all_observations = os.listdir(data_dir)
 ltahdr_error_dir = open('ltahdr_error.txt', 'wa')
 lta_success_file = open('ltahdr_success.txt', 'wa')
-
+"""
 def INVALID_OBS():
     for DIR_NAME in all_observations:
         current_obslog = glob.glob(data_dir+DIR_NAME+'/'+'*.obslog')
