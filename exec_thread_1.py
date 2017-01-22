@@ -1,12 +1,13 @@
 import spam
 import filter_lta 
+import time
 import os
 import glob
-import test_validity
+import trace
+#import test_validity
 spam.set_aips_userid(11)
 #List of all directories containing valid observations 
 VALID_FILES = filter_lta.VALID_OBS()
-
 #List of all directories for current threads to process
 THREAD_FILES = VALID_FILES[0:len(VALID_FILES):5]
 print 'Executing this thread'
@@ -78,18 +79,18 @@ def write_source_list(source_list):
     return write_string
 
 def main():     
-
     #Copy all LTA files in valid obs dir to fits directory for processing
     for CURRENT_DIR in THREAD_FILES:
         #source_name_file = open(CURRENT_DIR+'/'+'source_name_file.txt', 'w')
-        os.system('mv ' + CURRENT_DIR + '/* ' + 'fits/')
-        lta_to_uvfits()
-        #Write the list of sources to the current directory
-        #source_list = test_validity.test_validity()
-        #write_string = write_source_list(source_list)
-        source_name_file.write(write_string)
-        precalibrator()  
-        os.system('mv fits/* ' + CURRENT_DIR)
+        if CURRENT_DIR != '':
+            os.system('mv ' + CURRENT_DIR + '/* ' + 'fits/')
+            lta_to_uvfits()
+            #Write the list of sources to the current directory
+            #source_list = test_validity.test_validity()
+            #write_string = write_source_list(source_list)
+            #source_name_file.write(write_string)
+            precalibrator()  
+            os.system('mv fits/* ' + CURRENT_DIR)
         """
         #Convert the LTA file to the UVFITS format
         #Generates UVFITS file with same basename as LTA file 
