@@ -61,9 +61,9 @@ def write_source_list(source_list):
 
     i.e. source_list = [('3C286', 'name_of_lta_file')]
 
-    and convert to string consisting of whitespace seperated strings (to write to file)
+    and convert to string consisting of a whitespace seperated string (to write to file)
 
-    i.e. 3C286 name_of_lta_file
+    i.e. "3C286 name_of_lta_file"
 
     Inputs:
 
