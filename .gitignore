@@ -1,3 +1,9 @@
+#Generated THREAD processing directories
+THREAD*/
+
+#Subset of Main Cycle data
+subset_data/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

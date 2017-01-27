@@ -4,18 +4,53 @@ import time
 import os
 import glob
 import trace
-#import test_validity
+import test_validity
+
+#Set AIPS user id seperately for each thread
 spam.set_aips_userid(11)
-#List of all directories containing valid observations 
+
+"""
+Function for list of all directories containing valid observations
+INPUT : Path name of the directory with all lta files - /data2/gmrtarch/cycle20
+OUTPUT : Path of directory with valid LTA files - /data2/gmrtarch/cycle20/11DT013_25MAY11
+
+WORKING :
+valid_observations is the list of all valid obslog extracted from healty2_file.txt
+all_observations is the list of all directories in the particular directory(cycle20)
+current_obslog is the list of all obslog in the directory(cycle20)
+Compares current obslog and valid_observations and stores the directory path in valid_obs
+Returns valid_obs
+VALID_FILES = valid_obs
+""" 
+
 VALID_FILES = filter_lta.VALID_OBS()
-#List of all directories for current threads to process
+
+#Assigning directories thread wise to each thread.
 THREAD_FILES = VALID_FILES[0:len(VALID_FILES):5]
+
 print 'Executing this thread'
+
+#Log files for storing error files for lta_to_uvfits and precalibrator
 lta_to_uvfits_log = open('lta_to_uvfits_log.txt', 'w+')
 precalibrator_log = open('precalibrator_log.txt', 'w+')
-os.system('pwd')
+#os.system('pwd')
+
 
 def lta_to_uvfits():
+    """ 
+Function for converting lta to lta.UVFITS
+INPUT : lta files
+OUTPUT : lta.UVFITS files
+FLOW : All the files in the directories assigned to a thread are moved into fits/
+Each thread has its seperate fits directory
+gadpu -> THREADi -> fits -> All relevant files
+1.Changes Directory to fits/
+2.lta_files stores all lta_files present 
+3.Converts to lta.UVFITS
+4.If fails , write name of lta file to log and delete incomplete lta.UVFITS 
+5.Change directory to THREADi
+
+"""
     os.chdir('fits/')
     lta_files = glob.glob('*.lta*')
     #flag_files = glob.glob('*.FLAGS*')
@@ -25,7 +60,7 @@ def lta_to_uvfits():
         try:
             spam.convert_lta_to_uvfits( lta_file_name, uvfits_file_name )
             #In case of success in conversion remove the LTA file
-            os.system('rm ' + lta_file_name)
+#           os.system('rm ' + lta_file_name)
         except RuntimeError:
             #Write to log file
             lta_to_uvfits_log.write(lta_file_name)
@@ -36,6 +71,19 @@ def lta_to_uvfits():
     return lta_files 
 
 def precalibrator():
+    """
+Function for converting lta.UVFITS to UVFITS(Target and Callibrator)
+INPUT : lta.UVFITS
+OUTPUT : .UVFITS
+FLOW : fits/ directory has all files including .lta.UVFITS. Run pre-calibrate
+targets on all the available .lta.UVFITS files
+1. Change directory to /fits
+2. uvfits_files is list of all UVFITS
+3. Precalibrate uvfits_files
+4. If fails , write in log name of uv_fits files
+5. Change directory to THREADi
+
+"""
     os.chdir('fits/')
     uvfits_files = glob.glob('*.UVFITS')
     print uvfits_files
@@ -79,7 +127,7 @@ def write_source_list(source_list):
     return write_string
 
 def main():     
-    #Copy all LTA files in valid obs dir to fits directory for processing
+    #Copy all files in valid obs dir to fits directory for processing
     for CURRENT_DIR in THREAD_FILES:
         #source_name_file = open(CURRENT_DIR+'/'+'source_name_file.txt', 'w')
         if CURRENT_DIR != '':
@@ -107,3 +155,4 @@ def main():
         spam.process_target()
         """
 main()
+
