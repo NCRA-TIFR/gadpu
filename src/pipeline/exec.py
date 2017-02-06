@@ -256,7 +256,7 @@ def post():
 									new_files_process = os.listdir('./')
 									added_files_process = [z for z in new_files_process if z not in old_files_process]
 									file_no = ''
-									file_list = re.findall(r'[.][\d]+[.]',uvfits_with_newuvfits[i])
+									file_list = re.findall(r'[.][\d]+[.]',uvfits_with_newuvfits[i][0])
 									if file_list != []:
 										file_no = file_list[0][1:-1]
 									for k in added_files_process:
