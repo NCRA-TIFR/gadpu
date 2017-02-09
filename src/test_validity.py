@@ -5,33 +5,40 @@ import os
 import re
 import glob
 import trace
-"""
-data_dir = '../data2/shubhankar/subset_data/'
-#data_dir = '/data2/gmrtarch/cycle20/'
-VALID_LIST = '../parser/filter_healthy/healthy2_file.txt'
-valid_observations = open(VALID_LIST, 'r').read().split('\n')[0:-1]
-all_observations = os.listdir(data_dir)
-ltahdr_error_dir = open('ltahdr_error.txt', 'wa')
-lta_success_file = open('ltahdr_success.txt', 'wa')
-"""
 def INVALID_OBS():
+    invalid_obs = []
     for DIR_NAME in all_observations:
         current_obslog = glob.glob(data_dir+DIR_NAME+'/'+'*.obslog')
-        """
         if current_obslog == []:
-            print DIR_NAME
-            break
-        """
+            continue
+        
         #Extract substring that contains obslog relative path
         relative_path = re.findall(r'[/][\d]+[.]obslog', current_obslog[0])[0][1:] 
         #Invalid file (not fitting given constraints i.e. < 900 MHz and IF BW != 6,16,32)
         if relative_path not in valid_observations:
-            print data_dir+DIR_NAME
-        #Valid obslog file with no LTA file in the DIR
-
+ 	    invalid_obs.append(data_dir+DIR_NAME)   
+    
+	#Valid obslog file with no LTA file in the DIR        
         if relative_path in valid_observations:
             if glob.glob(data_dir+DIR_NAME+'/'+'*.lta') == []:
-                print data_dir+DIR_NAME
+                #print data_dir+DIR_NAME
+		invalid_obs.append(data_dir+DIR_NAME)
+    return invalid_obs
+
+def VALID_OBS():
+    valid_obs = []
+    for DIR_NAME in all_observations:
+            current_obslog = glob.glob(data_dir+DIR_NAME+'/'+'*.obslog')
+	    if current_obslog == []:
+            	continue
+            #Extract substring that contains obslog relative path
+            relative_path = re.findall(r'[/][\d]+[.]obslog', current_obslog[0])[0][1:] 
+                                    
+            if relative_path in valid_observations:
+                if glob.glob(data_dir+DIR_NAME+'/'+'*.lta') != []:
+                    valid_obs.append(data_dir+DIR_NAME)
+    return valid_obs
+
 
 def NUM_LTA():
     valid_obs = []
@@ -51,18 +58,7 @@ def NUM_LTA():
     return len([i for j in all_lta_files for i in j])
 
 
-def VALID_OBS():
-    valid_obs = []
-    for DIR_NAME in all_observations:
-        current_obslog = glob.glob(data_dir+DIR_NAME+'/'+'*.obslog')
 
-            #Extract substring that contains obslog relative path
-        relative_path = re.findall(r'[/][\d]+[.]obslog', current_obslog[0])[0][1:] 
-
-        if relative_path in valid_observations:
-            if glob.glob(data_dir+DIR_NAME+'/'+'*.lta') != []:
-                valid_obs.append(data_dir+DIR_NAME)
-    return valid_obs
 
 def extract( file_name ):
     with open(file_name) as f:
@@ -106,27 +102,26 @@ def test_validity():
     #lta_file_count = 0
     #for DIR in valid_observations:
 
-    all_lta_files = glob.glob('*.lta*')
+    lta_uvfits_files = glob.glob('*.lta*')
+    uvfits_files = glob.glob('*.lta*.UVFITS')
+    all_lta_files = [i for i in lta_uvfits_files if i not in uvfits_files]
     output_list = []
     for LTA_FILE in all_lta_files:
         try:
             output = main(LTA_FILE)
             #Check if valid target name is found
-            if output != -1:
-                lta_success_file.write(LTA_FILE + '\n' + output + '\n')
-                lta_file_count += 1
-                output_list.append([output, LTA_FILE])
-                """
-                print(LTA_FILE)
-                print output
-                print lta_file_count
-                """
-            else:
+            #if output != -1:
+                #lta_success_file.write(LTA_FILE + '\n' + output + '\n')
+                #lta_file_count += 1
+             #   output_list.append([output, LTA_FILE])
+                
+            if output == -1:
                 continue
-                ltahdr_error_dir.write(DIR+ '/' + LTA_FILE + '\n') 
-                lta_file_count += 1
+                #ltahdr_error_dir.write(DIR+ '/' + LTA_FILE + '\n') 
+                #lta_file_count += 1
         except:
+	    continue
             #Log the error directory to a file
-            ltahdr_error_dir.write(DIR+ '/' + LTA_FILE + '\n')
-            lta_file_count += 1
-    return output_list
+            #ltahdr_error_dir.write(DIR+ '/' + LTA_FILE + '\n')
+            #lta_file_count += 1
+    return output
