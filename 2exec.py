@@ -3,18 +3,11 @@ import time
 import os, re
 import glob
 import trace
-#import test_validity
 import sys
 import time,datetime
 import socket
 hostname=socket.gethostname()
-#Assign core to the process
-#pid = os.getpid()
-#os.system('taskset -cp 0 ' + str(pid))
 spam.set_aips_userid(12)
-#List of all directories containing valid observations 
-#List of all directories for current threads to process
-#print 'Executing this thread'
 
 failed_files = open('datfil/failed_files.log','a+')
 succeeded_files = open('datfil/succeeded_files.log','a+')
@@ -26,44 +19,6 @@ failed_files.flush()
 directory_log_pre = open('directory_log_pre.txt','a+')
 directory_log_post = open('directory_log_post.txt','a+')
 os.system('pwd')
-
-def lta_to_uvfits(CURRENT_DIR):
-	os.chdir('fits/')
-	original_stdout = sys.stdout
-	original_stderr = sys.stderr
-	l2u_precal_log = open('l2u_precal.log','a+')
-	sys.stdout = l2u_precal_log
-	sys.stderr = l2u_precal_log
-	lta_files = glob.glob('*.lta*')
-	#flag_files = glob.glob('*.FLAGS*')
-	lta_to_uvfits_log = open('lta_to_uvfits_log.txt', 'a+')
-	
-	lta_file_name = lta_files[0]
-	uvfits_file_name = lta_file_name +'.UVFITS'		
-	try:
-		spam.convert_lta_to_uvfits( lta_file_name, uvfits_file_name )
-		lta_to_uvfits_log.write(hostname+"\n"+"Successful conversion of " + str(lta_file_name) + " to " + str(lta_file_name+'.UVFITS')+'\n********************************************************\n')
-		lta_to_uvfits_log.flush()
-		os.remove(str(lta_file_name))
-		#print "*****LTA to UVFITS conversion DONE*****"
-		#In case of success in conversion remove the LTA file
-		#os.system('rm ' + lta_file_name)
-	except Exception,r:
-		#Write to log file
-		lta_to_uvfits_log.write(hostname+"\n"+"Error in conversion of " + str(lta_file_name) + " to " + str(lta_file_name+'.UVFITS')+'\n' + str(r) +'\n********************************************************\n')
-		lta_to_uvfits_log.flush()
-		failed_files.write(CURRENT_DIR + '/' +str(lta_file_name)+" : LTA to UVFITS conversion error\n")
-		failed_files.flush()
-		#os.system('rm -rf ./*')
-		#print "*****LTA to UVFITS conversion STOPPED*****"
-		##print r 
-		#Remove the UVFITS file 
-		#os.system('rm ' + str(lta_file_name)+ '.UVFITS')
-		
-	sys.stdout = original_stdout
-	sys.stderr = original_stderr
-	os.chdir('../')
-	#return lta_files 
 
 def precalibrator(CURRENT_DIR):
 	os.chdir('fits/')
@@ -116,9 +71,6 @@ def main():
 				directory_log_pre.write(CURRENT_DIR + '\n')
 				directory_log_pre.flush()
 				pre(CURRENT_DIR)
-	
-	#WRITE CODE TO BREAK PROCESS WHEN ONE STEP FAILS WHEN SETTING FLAGS
-								
 
 #conversion and precalibration
 def pre(CURRENT_DIR):
@@ -126,19 +78,12 @@ def pre(CURRENT_DIR):
 	os.system('echo "Valid File" > ' + CURRENT_DIR +'/valid.log')
 	os.chdir(CURRENT_DIR+'/')
 
-	lta_list = glob.glob('*.lta*')
-	
+	uv_fits_list = glob.glob('*.UVFITS')
+	lta_list = uv_fits_list[0].replace('.UVFITS','') #since there's only one single uvfits file
 	os.chdir(c_path +'/')
 
-	os.system('cp ' + CURRENT_DIR + '/' + lta_list[0] + ' fits/')
+	os.system('cp ' + CURRENT_DIR + '/' + uv_fits_list[0] + ' fits/')
 
-	#os.chdir('fits/')
-				
-	#source_with_lta = test_validity.test_validity()				   #[[source1,lta_file1],[source2,lta_file2]]
-
-	#os.chdir('../')
-			
-	lta_to_uvfits(CURRENT_DIR)	   #can be optimized, dont need to write them in the file source_lta
 	before_precal = os.listdir('fits/')
 	precalibrator(CURRENT_DIR)   #can be optimized, dont need to write them in the file uvfits_newuvfits
 	after_precal = os.listdir('fits/')
@@ -164,11 +109,8 @@ def pre(CURRENT_DIR):
 		if '.UVFITS' in added_precal_file:	
 			os.system('mv ' + added_precal_file + ' ' + added_precal_file.replace('.UVFITS','') + '_' + lta_list[0].replace('.','_')+ '.UVFITS')
 	os.chdir('../')
-	os.system('mkdir /FITS/data/IMAGES/' + lta_list[0].replace('.','_'))
-	os.system('mv fits/*' + ' /FITS/data/IMAGES/'+ lta_list[0].replace('.','_'))
-	
-
-
+	os.system('mkdir /gadpu/scratch/IMAGES/' + lta_list.replace('.','_'))
+	os.system('mv fits/*' + ' /gadpu/scratch/IMAGES/'+ lta_list.replace('.','_'))
 	
 #process target files
 def post(CURRENT_DIR,precal_uvfits,lta):
@@ -215,7 +157,7 @@ def post(CURRENT_DIR,precal_uvfits,lta):
 	os.chdir('../')
 	
 
-SOURCE_DIR = '/LTA/data/datum/'	
+SOURCE_DIR = '/gadpu/scratch/FILES/'	
 
 THREAD_FILES = os.listdir(SOURCE_DIR)
 for i in THREAD_FILES:
@@ -223,6 +165,3 @@ for i in THREAD_FILES:
 #print THREAD_FILES	
 c_path = os.getcwd()
 main()
-
-
-#print "Done"
