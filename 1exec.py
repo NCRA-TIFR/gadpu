@@ -109,8 +109,8 @@ def pre(CURRENT_DIR):
 		if '.UVFITS' in added_precal_file:	
 			os.system('mv ' + added_precal_file + ' ' + added_precal_file.replace('.UVFITS','') + '_' + lta_list[0].replace('.','_')+ '.UVFITS')
 	os.chdir('../')
-	os.system('mkdir /gadpu/scratch/IMAGES/' + lta_list.replace('.','_'))
-	os.system('mv fits/*' + ' /gadpu/scratch/IMAGES/'+ lta_list.replace('.','_'))
+	os.system('mkdir /FITS/data/IMAGES/' + lta_list.replace('.','_'))
+	os.system('mv fits/*' + ' /FITS/data/IMAGES/'+ lta_list.replace('.','_'))
 	
 #process target files
 def post(CURRENT_DIR,precal_uvfits,lta):
@@ -157,7 +157,7 @@ def post(CURRENT_DIR,precal_uvfits,lta):
 	os.chdir('../')
 	
 
-SOURCE_DIR = '/gadpu/scratch/FILES/'	
+SOURCE_DIR = '/LTA/data/PROCESSED/'	
 
 THREAD_FILES = os.listdir(SOURCE_DIR)
 for i in THREAD_FILES:
