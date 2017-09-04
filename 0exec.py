@@ -74,6 +74,7 @@ def main():
 
 #conversion and precalibration
 def pre(CURRENT_DIR):
+	start = time.time()
 	os.system('touch ' + CURRENT_DIR +'/valid.log')
 	os.system('echo "Valid File" > ' + CURRENT_DIR +'/valid.log')
 	os.chdir(CURRENT_DIR+'/')
@@ -92,13 +93,13 @@ def pre(CURRENT_DIR):
 	directory_log_post.write(CURRENT_DIR + '\n')
 	directory_log_post.flush()
 	
-	start = time.time()
+	#start = time.time()
 	for precal_file in added_precal:
 		if '.UVFITS' in precal_file:
 			precal_uvfits = ''
 			if 'S.UVFITS' not in precal_file:
 				precal_uvfits = precal_file
-				post(CURRENT_DIR,precal_uvfits,lta_list[0])
+				#post(CURRENT_DIR,precal_uvfits,lta_list[0])
 				
 	end = time.time()
 	os.chdir('fits/')

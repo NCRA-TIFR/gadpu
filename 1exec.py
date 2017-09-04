@@ -74,6 +74,7 @@ def main():
 
 #conversion and precalibration
 def pre(CURRENT_DIR):
+	start = time.time()
 	os.system('touch ' + CURRENT_DIR +'/valid.log')
 	os.system('echo "Valid File" > ' + CURRENT_DIR +'/valid.log')
 	os.chdir(CURRENT_DIR+'/')
@@ -92,13 +93,13 @@ def pre(CURRENT_DIR):
 	directory_log_post.write(CURRENT_DIR + '\n')
 	directory_log_post.flush()
 	
-	start = time.time()
+	#start = time.time()
 	for precal_file in added_precal:
 		if '.UVFITS' in precal_file:
 			precal_uvfits = ''
 			if 'S.UVFITS' not in precal_file:
 				precal_uvfits = precal_file
-				post(CURRENT_DIR,precal_uvfits,lta_list[0])
+				#post(CURRENT_DIR,precal_uvfits,lta_list[0])
 				
 	end = time.time()
 	os.chdir('fits/')
@@ -115,9 +116,6 @@ def pre(CURRENT_DIR):
 #process target files
 def post(CURRENT_DIR,precal_uvfits,lta):
 	os.chdir('fits/')
-	
-	
-	
 	process_target_log = open('process_log.txt','a+')
 	old_datfil_log = os.listdir('../datfil/')
 	old_files = os.listdir('./')
@@ -129,7 +127,7 @@ def post(CURRENT_DIR,precal_uvfits,lta):
 		succeeded_files.flush()
 		#print "*****Final Processing of UVFITS DONE*****"
 	except Exception,r:
-		process_target_log.write(hostname+"\n"+"Error in final processing of "+str(precal_uvfits)+'\n' + str(r) + '\n*******************************************************\n')
+		process_target_log.write(hostname+"\n"+"Error in final processing of "+str(precal_uvfits)+'\n' + str(r) + '\n' + 55*"*" + '\n')
 		process_target_log.flush()
 		failed_files.write(CURRENT_DIR + '/' + " : Final Processing error\n")
 		failed_files.flush()
